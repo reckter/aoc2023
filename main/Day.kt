@@ -32,7 +32,7 @@ interface Day {
             }
 
             val req = Request.Builder()
-                .url("https://adventofcode.com/2022/day/$day/input")
+                .url("https://adventofcode.com/2023/day/$day/input")
                 .addHeader("cookie", "session=${sessionFile.readText().trim()}")
                 .addHeader("user-agent", "github.com/reckter solutions by reckter")
                 .build()
