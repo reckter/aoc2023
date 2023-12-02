@@ -6,15 +6,18 @@ import java.io.File
 import java.nio.file.Files
 
 val client = OkHttpClient()
-interface Day {
 
+interface Day {
     val day: Int
 
     fun solvePart1()
 
     fun solvePart2()
 
-    fun loadInput(part: Int = 0, trim: Boolean = true): List<String> {
+    fun loadInput(
+        part: Int = 0,
+        trim: Boolean = true,
+    ): List<String> {
         if (!File("input").exists()) {
             File("input").mkdir()
         }
@@ -31,11 +34,12 @@ interface Day {
                 error("input not there and could not download file, because session-id.txt is missing!")
             }
 
-            val req = Request.Builder()
-                .url("https://adventofcode.com/2023/day/$day/input")
-                .addHeader("cookie", "session=${sessionFile.readText().trim()}")
-                .addHeader("user-agent", "github.com/reckter solutions by reckter")
-                .build()
+            val req =
+                Request.Builder()
+                    .url("https://adventofcode.com/2023/day/$day/input")
+                    .addHeader("cookie", "session=${sessionFile.readText().trim()}")
+                    .addHeader("user-agent", "github.com/reckter solutions by reckter")
+                    .build()
             val res = client.newCall(req).execute()
 
             if (!res.isSuccessful) {

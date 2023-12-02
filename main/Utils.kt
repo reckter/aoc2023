@@ -27,11 +27,17 @@ object Context {
     }
 }
 
-fun saveSolution(solution: Int, value: String) {
+fun saveSolution(
+    solution: Int,
+    value: String,
+) {
     File("solutions/${Context.day}_$solution.txt").writeText(value)
 }
 
-fun checkSolution(solution: Int, value: String) {
+fun checkSolution(
+    solution: Int,
+    value: String,
+) {
     if (!Files.exists(File("solutions/${Context.day}_$solution.txt").toPath())) {
         if (Context.testMode) {
             saveSolution(solution, value)
@@ -40,71 +46,74 @@ fun checkSolution(solution: Int, value: String) {
 
     val savedValue = File("solutions/${Context.day}_$solution.txt").readText()
     assert(
-        value == savedValue
+        value == savedValue,
     ) { "day ${Context.day} failed for solution $solution! \nwas: \n$savedValue\n\nnow:\n$value" }
 }
 
 fun Long.logTime(solution: String) {
-    val timeString = when {
-        this > 1_000_000_000 -> "${(this.toDouble() / 1_000_000_000.0).scale(3)}s"
-        this > 1_000_000 -> "${(this.toDouble() / 1_000_000.0).scale(3)}ms"
-        this > 1_000 -> "${(this.toDouble() / 1_000.0).scale(3)}μs"
-        else -> "${this}ns"
-    }
+    val timeString =
+        when {
+            this > 1_000_000_000 -> "${(this.toDouble() / 1_000_000_000.0).scale(3)}s"
+            this > 1_000_000 -> "${(this.toDouble() / 1_000_000.0).scale(3)}ms"
+            this > 1_000 -> "${(this.toDouble() / 1_000.0).scale(3)}μs"
+            else -> "${this}ns"
+        }
     println("$solution took: $timeString")
 }
 
 fun Double.logTime(solution: String) {
-    val timeString = when {
-        this > 1_000_000_000 -> "${(this / 1_000_000_000.0).scale(3)}s"
-        this > 1_000_000 -> "${(this / 1_000_000.0).scale(3)}ms"
-        this > 1_000 -> "${(this / 1_000.0).scale(3)}μs"
-        else -> "${this}ns"
-    }
+    val timeString =
+        when {
+            this > 1_000_000_000 -> "${(this / 1_000_000_000.0).scale(3)}s"
+            this > 1_000_000 -> "${(this / 1_000_000.0).scale(3)}ms"
+            this > 1_000 -> "${(this / 1_000.0).scale(3)}μs"
+            else -> "${this}ns"
+        }
     println("$solution took: $timeString")
 }
 
-private fun Double.scale(scale: Int) =
-    this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP).toString()
+private fun Double.scale(scale: Int) = this.toBigDecimal().setScale(scale, RoundingMode.HALF_UP).toString()
 
 fun <T : Day> solve(
     enablePartOne: Boolean = true,
     enablePartTwo: Boolean = true,
-    clazz: Class<T>
+    clazz: Class<T>,
 ) {
     val day = clazz.kotlin.createInstance()
 
-    val partOneNanos = if (enablePartOne) {
-        measureNanoTime { day.solvePart1() }
-    } else {
-        null
-    }
+    val partOneNanos =
+        if (enablePartOne) {
+            measureNanoTime { day.solvePart1() }
+        } else {
+            null
+        }
 
-    val partTwoNanos = if (enablePartTwo) {
-        measureNanoTime { day.solvePart2() }
-    } else {
-        null
-    }
+    val partTwoNanos =
+        if (enablePartTwo) {
+            measureNanoTime { day.solvePart2() }
+        } else {
+            null
+        }
 
     println()
     partOneNanos?.logTime("solution 1")
     partTwoNanos?.logTime("solution 2")
 }
 
-fun <T : Day> timed(
-    clazz: Class<T>
-) {
+fun <T : Day> timed(clazz: Class<T>) {
     val day = clazz.kotlin.createInstance()
 
     val times = 1_000
     val warmup = 1_00
-    val partOneNanos = (0..times).map {
-        measureNanoTime { day.solvePart1() }
-    }.drop(warmup)
+    val partOneNanos =
+        (0..times).map {
+            measureNanoTime { day.solvePart1() }
+        }.drop(warmup)
 
-    val partTwoNanos = (0..times).map {
-        measureNanoTime { day.solvePart2() }
-    }.drop(warmup)
+    val partTwoNanos =
+        (0..times).map {
+            measureNanoTime { day.solvePart2() }
+        }.drop(warmup)
 
     println()
     times.print("measurements: ")
@@ -116,7 +125,7 @@ fun <T : Day> timed(
 
 inline fun <reified T : Day> solve(
     enablePartOne: Boolean = true,
-    enablePartTwo: Boolean = true
+    enablePartTwo: Boolean = true,
 ) {
     solve<T>(enablePartOne, enablePartTwo, T::class.java)
 }
@@ -130,6 +139,7 @@ fun readLines(file: String): List<String> {
 }
 
 fun List<String>.toIntegers(): List<Int> = this.map { it.toInt() }
+
 fun List<String>.toLongs(): List<Long> = this.map { it.toLong() }
 
 fun List<String>.toBigIntegers(): List<BigInteger> = this.map { it.toBigInteger() }
@@ -202,16 +212,17 @@ fun <E, F> Iterable<E>.allPairings(with: Iterable<F>): Sequence<Pair<E, F>> {
 
 fun <E> List<E>.allPairings(
     includeSelf: Boolean = false,
-    bothDirections: Boolean = true
+    bothDirections: Boolean = true,
 ): Sequence<Pair<E, E>> {
     return this
         .asSequence()
         .mapIndexed { index, it ->
-            val others = if (bothDirections) {
-                this
-            } else {
-                this.subList(index, this.size)
-            }
+            val others =
+                if (bothDirections) {
+                    this
+                } else {
+                    this.subList(index, this.size)
+                }
 
             others.mapNotNull { other ->
                 if (it != other || includeSelf) {
@@ -233,22 +244,23 @@ fun <E> List<E>.allCombinations(): Sequence<List<E>> {
         .flatMap {
             sequenceOf(
                 it + this.first(),
-                it
+                it,
             )
         }
 }
 
 fun <E> List<E>.permutations(): Sequence<List<E>> {
     if (this.size <= 1) return sequenceOf(this)
-    val insertInto = this.drop(1)
-        .permutations()
+    val insertInto =
+        this.drop(1)
+            .permutations()
 
     return insertInto
         .flatMap { list ->
             (
                 list.indices +
                     list.size
-                )
+            )
                 .asSequence()
                 .map { list.take(it) + this.first() + list.drop(it) }
         }
@@ -258,13 +270,13 @@ fun <Node> dijkstraBigDecimal(
     start: Node,
     end: Node,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal
+    getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal,
 ): Pair<List<Node>, BigDecimal> {
     return dijkstraBigDecimal(
         start,
         isEnd = { it == end },
         getNeighbors,
-        getWeightBetweenNodes
+        getWeightBetweenNodes,
     )
 }
 
@@ -272,7 +284,7 @@ fun <Node> dijkstraBigDecimal(
     start: Node,
     isEnd: (it: Node) -> Boolean,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal
+    getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal,
 ): Pair<List<Node>, BigDecimal> {
     return dijkstra(start, isEnd, 0.toBigDecimal(), BigDecimal::plus, getNeighbors, getWeightBetweenNodes)
 }
@@ -281,7 +293,7 @@ fun <Node> dijkstraDouble(
     start: Node,
     isEnd: (it: Node) -> Boolean,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Double
+    getWeightBetweenNodes: (from: Node, to: Node) -> Double,
 ): Pair<List<Node>, Double> {
     return dijkstra(start, isEnd, 0.0, Double::plus, getNeighbors, getWeightBetweenNodes)
 }
@@ -290,13 +302,13 @@ fun <Node> dijkstraDouble(
     start: Node,
     end: Node,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Double
+    getWeightBetweenNodes: (from: Node, to: Node) -> Double,
 ): Pair<List<Node>, Double> {
     return dijkstraDouble(
         start,
         isEnd = { it == end },
         getNeighbors,
-        getWeightBetweenNodes
+        getWeightBetweenNodes,
     )
 }
 
@@ -304,7 +316,7 @@ fun <Node> dijkstraInt(
     start: Node,
     end: Node,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Int
+    getWeightBetweenNodes: (from: Node, to: Node) -> Int,
 ): Pair<List<Node>, Int> {
     return dijkstraInt(start, isEnd = { it == end }, getNeighbors, getWeightBetweenNodes)
 }
@@ -313,7 +325,7 @@ fun <Node> dijkstraInt(
     start: Node,
     isEnd: (it: Node) -> Boolean,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Int
+    getWeightBetweenNodes: (from: Node, to: Node) -> Int,
 ): Pair<List<Node>, Int> {
     return dijkstra(start, isEnd, 0, Int::plus, getNeighbors, getWeightBetweenNodes)
 }
@@ -322,7 +334,7 @@ fun <Node> dijkstraLong(
     start: Node,
     end: Node,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Long
+    getWeightBetweenNodes: (from: Node, to: Node) -> Long,
 ): Pair<List<Node>, Long> {
     return dijkstraLong(start, isEnd = { it == end }, getNeighbors, getWeightBetweenNodes)
 }
@@ -331,7 +343,7 @@ fun <Node> dijkstraLong(
     start: Node,
     isEnd: (it: Node) -> Boolean,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Long
+    getWeightBetweenNodes: (from: Node, to: Node) -> Long,
 ): Pair<List<Node>, Long> {
     return dijkstra(start, isEnd, 0L, Long::plus, getNeighbors, getWeightBetweenNodes)
 }
@@ -342,7 +354,7 @@ fun <Node, Weight> dijkstra(
     zero: Weight,
     add: (a: Weight, b: Weight) -> Weight,
     getNeighbors: (from: Node) -> List<Node>,
-    getWeightBetweenNodes: (from: Node, to: Node) -> Weight
+    getWeightBetweenNodes: (from: Node, to: Node) -> Weight,
 ): Pair<List<Node>, Weight> where Weight : Number, Weight : Comparable<Weight> {
     val queue = PriorityQueue<Pair<List<Node>, Weight>>(Comparator.comparing { it.second })
 
@@ -360,20 +372,23 @@ fun <Node, Weight> dijkstra(
             .forEach {
                 seen.add(it)
                 queue.add(
-                    (next.first + it) to add(
-                        next.second,
-                        getWeightBetweenNodes(next.first.last(), it)
-                    )
+                    (next.first + it) to
+                        add(
+                            next.second,
+                            getWeightBetweenNodes(next.first.last(), it),
+                        ),
                 )
             }
     }
     error("no path  found!")
 }
 
-fun hammingDistance(a: String, b: String) =
-    a.zip(b)
-        .count { (a, b) -> a != b } +
-        a.length - b.length
+fun hammingDistance(
+    a: String,
+    b: String,
+) = a.zip(b)
+    .count { (a, b) -> a != b } +
+    a.length - b.length
 
 fun <E> LinkedList<E>.rotateRight(by: Int) {
     when {
@@ -396,6 +411,7 @@ val uppercaseAlphabet = alphabet.map(Char::uppercaseChar)
 val uppercaseAlphabetString = uppercaseAlphabet.joinToString("")
 
 fun Int.digits() = this.toString().map { it.toString().toInt() }
+
 fun Long.digits() = this.toString().map { it.toString().toInt() }
 
 fun List<Int>.toLong(): Long {
@@ -404,11 +420,12 @@ fun List<Int>.toLong(): Long {
         .sum()
 }
 
-fun <E> List<E>.replace(index: Int, item: E): List<E> =
-    this.take(index) + item + this.drop(index + 1)
+fun <E> List<E>.replace(
+    index: Int,
+    item: E,
+): List<E> = this.take(index) + item + this.drop(index + 1)
 
-fun Pair<Int, Int>.manhattenDistance(to: Pair<Int, Int> = 0 to 0) =
-    abs(this.first - to.first) + abs(this.second - to.second)
+fun Pair<Int, Int>.manhattenDistance(to: Pair<Int, Int> = 0 to 0) = abs(this.first - to.first) + abs(this.second - to.second)
 
 fun Pair<Int, Int>.distance(to: Pair<Int, Int> = 0 to 0): Double {
     val x = (this.first - to.first).toDouble()
@@ -434,7 +451,10 @@ fun <E> channelOf(vararg values: E): Channel<E> {
     return channel
 }
 
-fun <E> List<E>.padStart(size: Int, padWith: E) = (0 until size - this.size).map { padWith } + this
+fun <E> List<E>.padStart(
+    size: Int,
+    padWith: E,
+) = (0 until size - this.size).map { padWith } + this
 
 fun <E> E.repeatToSequence(times: Int) = this.repeatToSequence(times.toLong())
 
@@ -487,10 +507,21 @@ fun <T> List<List<T>>.swapDimensions(): List<List<T>> {
 }
 
 // from https://rosettacode.org/wiki/Least_common_multiple#Kotlin
-fun gcd(a: Long, b: Long): Long = if (b == 0L) a else gcd(b, a % b)
-fun lcm(a: Long, b: Long): Long = a / gcd(a, b) * b
+fun gcd(
+    a: Long,
+    b: Long,
+): Long = if (b == 0L) a else gcd(b, a % b)
 
-fun fastExp(aBase: Long, aExponent: Long, module: Long): Long {
+fun lcm(
+    a: Long,
+    b: Long,
+): Long = a / gcd(a, b) * b
+
+fun fastExp(
+    aBase: Long,
+    aExponent: Long,
+    module: Long,
+): Long {
     var base = aBase
     var exponent = aExponent
     var result = 1L
@@ -509,7 +540,10 @@ fun fastExp(aBase: Long, aExponent: Long, module: Long): Long {
 }
 
 @OptIn(ExperimentalContracts::class)
-public inline fun repeat(times: Long, action: (Long) -> Unit) {
+public inline fun repeat(
+    times: Long,
+    action: (Long) -> Unit,
+) {
     contract { callsInPlace(action) }
 
     for (index in 0 until times) {

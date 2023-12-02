@@ -10,13 +10,13 @@ import kotlin.math.sign
 
 data class Cord2D<T : Number>(
     val x: T,
-    val y: T
+    val y: T,
 )
 
 operator fun Cord2D<Int>.plus(other: Cord2D<Int>): Cord2D<Int> {
     return Cord2D(
         this.x + other.x,
-        this.y + other.y
+        this.y + other.y,
     )
 }
 
@@ -26,7 +26,7 @@ fun Cord2D<Int>.getNeighbors(noEdges: Boolean = false): List<Cord2D<Int>> {
             0 to -1,
             0 to 1,
             -1 to 0,
-            1 to 0
+            1 to 0,
         )
             .map {
                 this + Cord2D(it.first, it.second)

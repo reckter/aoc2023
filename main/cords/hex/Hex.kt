@@ -3,7 +3,7 @@ package me.reckter.aoc.hex
 data class Hex(
     val x: Int,
     val y: Int,
-    val z: Int
+    val z: Int,
 ) {
     enum class Direction(val direction: Hex) {
         NorthEast(Hex(1, 0, -1)),
@@ -11,7 +11,7 @@ data class Hex(
         SouthEast(Hex(0, -1, +1)),
         SouthWest(Hex(-1, 0, +1)),
         West(Hex(-1, +1, 0)),
-        NorthWest(Hex(0, +1, -1))
+        NorthWest(Hex(0, +1, -1)),
     }
 }
 
@@ -19,7 +19,7 @@ operator fun Hex.plus(other: Hex): Hex {
     return Hex(
         this.x + other.x,
         this.y + other.y,
-        this.z + other.z
+        this.z + other.z,
     )
 }
 

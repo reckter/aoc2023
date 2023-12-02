@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class RotateTest {
-
     @Test
     fun `should correctly rotate right`() {
         assertEquals(listOf(1, 2, 3), listOf(2, 3, 1).rotateRight())

@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.reflections.Reflections
 
 class RegressionTest {
-
     @ParameterizedTest
     @Tag("no-ci")
     @MethodSource("getDays")
@@ -22,13 +21,13 @@ class RegressionTest {
     }
 
     companion object {
-
         @JvmStatic
-        val days = run {
-            val reflections = Reflections("me.reckter")
-            reflections.getSubTypesOf(Day::class.java)
-                .toSet()
-                .sortedBy { it.simpleName.removePrefix("Day").toInt() }
-        }
+        val days =
+            run {
+                val reflections = Reflections("me.reckter")
+                reflections.getSubTypesOf(Day::class.java)
+                    .toSet()
+                    .sortedBy { it.simpleName.removePrefix("Day").toInt() }
+            }
     }
 }

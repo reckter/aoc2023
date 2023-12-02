@@ -4,7 +4,7 @@ data class Cord4D<T : Number>(
     val x: T,
     val y: T,
     val z: T,
-    val w: T
+    val w: T,
 )
 
 operator fun Cord4D<Int>.plus(other: Cord4D<Int>): Cord4D<Int> {

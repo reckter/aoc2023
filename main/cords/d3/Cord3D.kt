@@ -9,26 +9,26 @@ import java.lang.Math.abs
 data class Cord3D<T : Number>(
     val x: T,
     val y: T,
-    val z: T
+    val z: T,
 )
 
 operator fun Cord3D<Int>.plus(other: Cord3D<Int>): Cord3D<Int> {
     return Cord3D(
         this.x + other.x,
         this.y + other.y,
-        this.z + other.z
+        this.z + other.z,
     )
 }
 
 fun Cord3D<Int>.getNeighbors(noEdges: Boolean = false): List<Cord3D<Int>> {
-    if(noEdges) {
+    if (noEdges) {
         return listOf(
-            Cord3D(0,0, -1),
-            Cord3D(0,0, 1),
+            Cord3D(0, 0, -1),
+            Cord3D(0, 0, 1),
             Cord3D(0, -1, 0),
             Cord3D(0, 1, 0),
             Cord3D(-1, 0, 0),
-            Cord3D(1, 0, 0)
+            Cord3D(1, 0, 0),
         )
             .map {
                 this + it
