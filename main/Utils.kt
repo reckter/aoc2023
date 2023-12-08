@@ -550,3 +550,21 @@ public inline fun repeat(
         action(index)
     }
 }
+
+fun binarySearch(
+    start: Long,
+    end: Long,
+    predicate: (Long) -> Boolean,
+): Long {
+    var start = start
+    var end = end
+    while (start < end) {
+        val mid = start + (end - start) / 2
+        if (predicate(mid)) {
+            end = mid
+        } else {
+            start = mid + 1
+        }
+    }
+    return start
+}
