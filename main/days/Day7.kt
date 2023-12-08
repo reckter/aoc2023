@@ -89,7 +89,7 @@ class Day7 : Day {
                 bid * (index + 1)
             }
             .sum()
-            .solution(1)
+            .solution(2)
     }
 }
 
