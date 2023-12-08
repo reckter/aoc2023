@@ -10,26 +10,29 @@ class Day6 : Day {
     override val day = 6
 
     val races by lazy {
-        val times = loadInput()
-            .first()
-            .removePrefix("Time:")
-            .trim()
-            .split(" ")
-            .map { it.trim() }
-            .filter { it.isNotEmpty()}
-            .toIntegers()
+        val times =
+            loadInput()
+                .first()
+                .removePrefix("Time:")
+                .trim()
+                .split(" ")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .toIntegers()
 
-        val distances = loadInput()
-            .last()
-            .removePrefix("Distance:")
-            .trim()
-            .split(" ")
-            .map { it.trim() }
-            .filter { it.isNotEmpty()}
-            .toIntegers()
+        val distances =
+            loadInput()
+                .last()
+                .removePrefix("Distance:")
+                .trim()
+                .split(" ")
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
+                .toIntegers()
 
         times.zip(distances)
     }
+
     override fun solvePart1() {
         races
             .map { (time, distance) ->
@@ -42,24 +45,25 @@ class Day6 : Day {
     }
 
     override fun solvePart2() {
-        val time = loadInput()
-            .first()
-            .removePrefix("Time:")
-            .replace(" ", "")
-            .toLong()
+        val time =
+            loadInput()
+                .first()
+                .removePrefix("Time:")
+                .replace(" ", "")
+                .toLong()
 
-        val distance = loadInput()
-            .last()
-            .removePrefix("Distance:")
-            .replace(" ", "")
-            .toLong()
+        val distance =
+            loadInput()
+                .last()
+                .removePrefix("Distance:")
+                .replace(" ", "")
+                .toLong()
 
         val firstSuccess = binarySearch(0L, time / 2) { it * (time - it) > distance }
         val lastSuccess = binarySearch(time / 2, time) { it * (time - it) < distance }
 
         (lastSuccess - firstSuccess).solution(2)
     }
-
 }
 
 fun main() = solve<Day6>()
