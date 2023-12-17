@@ -20,6 +20,13 @@ operator fun Cord2D<Int>.plus(other: Cord2D<Int>): Cord2D<Int> {
     )
 }
 
+operator fun Cord2D<Int>.minus(other: Cord2D<Int>): Cord2D<Int> {
+    return Cord2D(
+        this.x - other.x,
+        this.y - other.y,
+    )
+}
+
 fun Cord2D<Int>.getNeighbors(noEdges: Boolean = false): List<Cord2D<Int>> {
     if (noEdges) {
         return listOf(

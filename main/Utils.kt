@@ -2,6 +2,7 @@ package me.reckter.aoc
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.trySendBlocking
+import me.reckter.aoc.cords.d2.Cord2D
 import java.io.File
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -269,7 +270,7 @@ fun <E> List<E>.permutations(): Sequence<List<E>> {
 fun <Node> dijkstraBigDecimal(
     start: Node,
     end: Node,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal,
 ): Pair<List<Node>, BigDecimal> {
     return dijkstraBigDecimal(
@@ -283,7 +284,7 @@ fun <Node> dijkstraBigDecimal(
 fun <Node> dijkstraBigDecimal(
     start: Node,
     isEnd: (it: Node) -> Boolean,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> BigDecimal,
 ): Pair<List<Node>, BigDecimal> {
     return dijkstra(start, isEnd, 0.toBigDecimal(), BigDecimal::plus, getNeighbors, getWeightBetweenNodes)
@@ -292,7 +293,7 @@ fun <Node> dijkstraBigDecimal(
 fun <Node> dijkstraDouble(
     start: Node,
     isEnd: (it: Node) -> Boolean,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Double,
 ): Pair<List<Node>, Double> {
     return dijkstra(start, isEnd, 0.0, Double::plus, getNeighbors, getWeightBetweenNodes)
@@ -301,7 +302,7 @@ fun <Node> dijkstraDouble(
 fun <Node> dijkstraDouble(
     start: Node,
     end: Node,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Double,
 ): Pair<List<Node>, Double> {
     return dijkstraDouble(
@@ -315,7 +316,7 @@ fun <Node> dijkstraDouble(
 fun <Node> dijkstraInt(
     start: Node,
     end: Node,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Int,
 ): Pair<List<Node>, Int> {
     return dijkstraInt(start, isEnd = { it == end }, getNeighbors, getWeightBetweenNodes)
@@ -324,7 +325,7 @@ fun <Node> dijkstraInt(
 fun <Node> dijkstraInt(
     start: Node,
     isEnd: (it: Node) -> Boolean,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Int,
 ): Pair<List<Node>, Int> {
     return dijkstra(start, isEnd, 0, Int::plus, getNeighbors, getWeightBetweenNodes)
@@ -333,7 +334,7 @@ fun <Node> dijkstraInt(
 fun <Node> dijkstraLong(
     start: Node,
     end: Node,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Long,
 ): Pair<List<Node>, Long> {
     return dijkstraLong(start, isEnd = { it == end }, getNeighbors, getWeightBetweenNodes)
@@ -342,7 +343,7 @@ fun <Node> dijkstraLong(
 fun <Node> dijkstraLong(
     start: Node,
     isEnd: (it: Node) -> Boolean,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Long,
 ): Pair<List<Node>, Long> {
     return dijkstra(start, isEnd, 0L, Long::plus, getNeighbors, getWeightBetweenNodes)
@@ -353,7 +354,7 @@ fun <Node, Weight> dijkstra(
     isEnd: (Node) -> Boolean,
     zero: Weight,
     add: (a: Weight, b: Weight) -> Weight,
-    getNeighbors: (from: Node) -> List<Node>,
+    getNeighbors: (history: List<Node>) -> List<Node>,
     getWeightBetweenNodes: (from: Node, to: Node) -> Weight,
 ): Pair<List<Node>, Weight> where Weight : Number, Weight : Comparable<Weight> {
     val queue = PriorityQueue<Pair<List<Node>, Weight>>(Comparator.comparing { it.second })
@@ -367,7 +368,7 @@ fun <Node, Weight> dijkstra(
         if (isEnd(next.first.last())) {
             return next
         }
-        getNeighbors(next.first.last())
+        getNeighbors(next.first)
             .filter { it !in seen }
             .forEach {
                 seen.add(it)
@@ -567,4 +568,21 @@ fun binarySearch(
         }
     }
     return start
+}
+
+fun <E> List<E>.nullIfEmpty(): List<E>? {
+    if (this.isEmpty()) return null
+    return this
+}
+
+fun <E> List<String>.parseMap(parse: (Char) -> E): Map<Cord2D<Int>, E> {
+    return this
+        .mapIndexed { y, line ->
+            line
+                .mapIndexed { x, char ->
+                    Cord2D(x, y) to parse(char)
+                }
+        }
+        .flatten()
+        .toMap()
 }
